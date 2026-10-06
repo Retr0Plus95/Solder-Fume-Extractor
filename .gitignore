@@ -1,0 +1,24 @@
+# Arduino build/editor files
+*.hex
+*.elf
+*.eep
+*.map
+*.lss
+*.sym
+build/
+.build/
+.vscode/
+.idea/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Generated archives
+*.zip
+*.tar.gz
+*.tgz
+*.bundle
