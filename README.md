@@ -61,4 +61,4 @@ The project uses a 12 V supply and contains fused power wiring. Follow the build
 
 ## License
 
-No open-source license has been selected yet. Until a license is added, the contents remain all rights reserved.
+MIT
