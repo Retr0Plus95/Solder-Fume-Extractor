@@ -1,5 +1,5 @@
 # Solder Fume Extractor — Build Guide
-**Drawing set SFE-2026, Rev C · Firmware v1.2** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · `SolderFumeExtractor.ino`
+**Drawing set SFE-2026, Rev D · Firmware v1.2** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · Sheet 4 perfboard layout · `SolderFumeExtractor.ino`
 
 ---
 
@@ -48,7 +48,7 @@ read back on interrupts, so the screen shows real RPM rather than just the deman
 | U1 | MP1584EN buck converter module | 1 | Or LM2596. 7805 + heatsink also works. |
 | U2 | ATmega328P-PU + 28-pin DIP socket | 1 | Socket strongly recommended |
 | Q1 | 2N2222A NPN, TO-92 | 1 | Note the pinout — see §6 |
-| D1 | **1N4007** or 1N4002 | 1 | Reverse-polarity **shunt**, cathode to +12 V |
+| D1 | **1N5402G** (3 A, 200 V, DO-201AD) | 1 | Reverse-polarity **shunt**, band to +12 V. A 1N4007 also works. |
 | D2, D3 | 5 mm green LED | 2 | Fan A / Fan B status |
 | Y1 | 16.000 MHz HC-49S crystal | 1 | |
 | — | LCD 1602A + PCF8574 I²C backpack | 1 | Address 0x27 or 0x3F |
@@ -61,7 +61,7 @@ read back on interrupts, so the screen shows real RPM rather than just the deman
 | R5 | 1 kΩ 1/4 W | 1 |
 | R12, R13 | 4.7 kΩ 1/4 W | 2 |
 | RV1 | 10 kΩ **linear** potentiometer + knob | 1 |
-| C1 | 470 µF 25 V **ELECTROLYTIC** (polarised) | 1 |
+| C1A, C1B | 100 µF 50 V **ELECTROLYTIC** (polarised), in parallel = 200 µF | 2 |
 | C2 | 100 µF 10 V **ELECTROLYTIC** (polarised) | 1 |
 | C3, C5, C8, C9 | 100 nF **CERAMIC** | 4 |
 | C6, C7 | 22 pF **CERAMIC** | 2 |
@@ -122,7 +122,7 @@ pinout map shows both as well — amber for the Arduino name, blue for the net.
 | SW1 output | +12 V rail |
 | SW1 lamp terminal | 0 V (lamp is internally fed from the switched side) |
 | DC jack − | 0 V star point |
-| +12 V rail | C1 470 µF +, **D1 cathode**, U1 IN+, fan A pin 2, fan B pin 2 |
+| +12 V rail | C1A + and C1B +, **D1 cathode (band)**, U1 IN+, fan A pin 2, fan B pin 2 |
 | D1 anode | 0 V (reverse shunt — normally blocking) |
 | U1 OUT+ | +5 V rail, C2, C3 |
 | RV1 track ends | +5 V and 0 V (swap if the knob turns backwards) |
@@ -179,7 +179,10 @@ will not run this chip at all.
 > at 12.5 kHz and every timing in the sketch would be double. Burning the Uno
 > bootloader once fixes the fuses permanently.
 
-Library needed: **LiquidCrystal_I2C by John Rickman**, via Library Manager.
+Library needed: **LiquidCrystal I2C by Frank de Brabander** — in the Arduino IDE open
+*Tools → Manage Libraries*, search `LiquidCrystal I2C`, and install the one with that
+author. (Earlier versions of this guide named the wrong author, which would have sent
+you looking for an entry the Library Manager doesn't show.)
 
 ---
 
@@ -209,12 +212,17 @@ Do these in order. Do not skip step 2.
    pot to **5.10 V** (5.00 V if you are not fitting the USB port). Power down.
 2. **Continuity check.** Meter across +12 V/0 V and +5 V/0 V — both should read well
    over 1 kΩ. Anything near zero means find the short now, not later.
+   Then the **D1 check**: meter on diode test, red probe on the +12 V row, black on
+   the 0 V row. The reading should start low and **climb to OL** as C1A/C1B charge.
+   A steady 0.5–0.7 V means D1 is in backwards — it would short your supply the
+   moment you switch on.
 3. Fit U2, the crystal, the caps and the LCD. Power up. You should see the splash
    screen for 2 seconds and both fans at full speed.
 4. If the screen is lit but blank, adjust the contrast pot on the I²C backpack. If it
    is completely dead, change `LCD_ADDRESS` to `0x3F` and re-upload.
 5. Turn RV1 fully down — fans should stop, screen shows `STOPPED`. Turn up slowly:
-   the fans should kick to full for ~0.6 s, then settle. RPM should track the demand.
+   the fans ramp up to full over about a second, hold briefly, then settle to the
+   knob setting. RPM should track the demand.
 6. Unplug fan B while running. Within 3 seconds LED B should blink fast and the
    screen should show `!FAN B NO SIGNAL`. Plug it back in; it should clear.
 7. Do all of the above with **nothing plugged into the USB port**. Add that load
@@ -253,6 +261,7 @@ to `CHANGE FILTER!`.
 | RPM reads 0 but the fan spins | Missing tach pull-up (R8/R9), or SENSE and PWM wires swapped |
 | RPM reads roughly double | Fan puts out 4 pulses/rev — set `PULSES_PER_REV` to 4 |
 | Backlight goes dark after 30 s | Normal — nudge the pot to wake it |
+| LCD shows garbage or freezes now and then | Most PCF8574 backpacks have their own 4.7 kΩ pull-ups on SDA/SCL. If yours doesn't, add 4.7 kΩ from SDA to +5 V and from SCL to +5 V |
 | Speed jumps around | Missing C4 on the pot wiper, or pot wiring runs next to the fan leads |
 | LCD blank / garbled | Wrong I²C address, contrast pot, or SDA/SCL swapped |
 | Fuse blows the moment you power up | Supply polarity reversed — D1 did its job |
@@ -282,10 +291,15 @@ to `CHANGE FILTER!`.
 ## 11. Firmware features
 
 **Soft ramp (v1.2).** Commanded duty slews at 3 % per 25 ms rather than stepping, so
-the fans ease up over about 850 ms instead of being slammed to 100 %. This lowers the
-peak current the fans draw at power-on. Note what it does *not* cover: the inrush into
-C1 when you flip SW1 is a separate event a few milliseconds long, and that is what a
-slow-blow fuse is for.
+the fans ease up over about 850 ms instead of being slammed to 100 %. That spreads out
+the current the fans draw while they accelerate. Two things it does *not* cover:
+
+- For the first ~70 ms after you flip SW1, the chip hasn't booted yet, so the fans
+  see full demand. That is the fail-safe working (a dead controller means full
+  extraction), and it is far too short to matter to a slow-blow fuse.
+- The inrush into C1A/C1B when you flip SW1 lasts a few milliseconds and happens
+  before any code runs. That is what a slow-blow (T-rated) fuse is for. With 200 µF
+  instead of the original 470 µF this inrush is smaller than before.
 
 **Watchdog timer.** If the firmware ever hangs, the chip resets after 2 s. Because a
 reset leaves D9 floating and R6 holds Q1 off, the fans revert to 100 % — the safe
@@ -370,7 +384,7 @@ to the ATmega, which is rated to 5.5 V.
 
 ### D1 is a shunt, not a series part
 
-Wire the 1N4007 **across** the rail, cathode (banded end) to +12 V, anode to 0 V,
+Wire the 1N5402G **across** the rail, cathode (banded end) to +12 V, anode to 0 V,
 downstream of F1. Normally it is reverse-biased and does nothing at all: no current,
 no heat, **no voltage drop**, so the fans get the full 12 V. Connect the supply
 backwards and it conducts, F1 clears, and everything downstream is protected.
@@ -379,7 +393,15 @@ The trade-off versus a series Schottky is that after a reversal you replace a fu
 rather than just unplugging. In exchange you lose no voltage in normal use, which
 with two fans is the better deal. Note that a 12 V 2 A adapter will current-limit
 rather than dump 20 A, so the fuse may take a moment to open — the diode handles
-that easily (30 A for 8.3 ms rating).
+that easily (the 1N5402G is rated for a 200 A surge).
+
+**The 1N5402G's legs are about 1.3 mm thick.** Ordinary perfboard holes are 1.0 mm,
+so they probably won't go in. Open those two holes up with a 1.3–1.5 mm drill bit,
+turning it by hand. Don't file or snip the legs thinner.
+
+**If you wired it in series instead** (in line with the +12 V feed): it still works,
+because it's rated 3 A, but it drops about 0.9 V at full load and runs warm, so the
+fans lose roughly 8 % of their voltage. As a shunt it costs nothing.
 
 ### Two things that catch people
 The MP1584 now carries 1.11 A of a realistic 2 A ceiling. It sits in the fan airflow,
@@ -395,39 +417,70 @@ No firmware change. The MCU has no knowledge of this port.
 
 ---
 
-## 13. Perfboard layout (sheet 4)
+## 13. Perfboard layout (sheet 4, Rev D)
 
-A verified component placement on a 32 x 20 hole board, about 81 x 51 mm.
+A component placement on a 32 × 20 hole board, about 81 × 51 mm. It is checked both
+electrically and physically by `hardware/layout/pcb.py`.
 
 **Perfboard, not stripboard.** Plain pad-per-hole board has no copper strips, so
-there are no track cuts to get wrong — the single most common beginner error on
-stripboard. Everything is either a bare-wire bus or an insulated link.
+there are no track cuts to get wrong. Everything is either a bare-wire bus or an
+insulated link.
 
-**Build order:**
+**What changed from Rev C.** The Rev C layout's wiring was right, but a physical-fit check found
+62 problems: two legs drawn into one hole in three places, six resistors drawn three
+holes long (too short to lie flat, too far to stand up), the buck module drawn far
+too small with R4 underneath it, D1 overlapping C1, R5 under the socket, and wires
+drawn straight across other joints. If you soldered anything from the Rev C layout,
+compare it against Rev D before going further.
 
-1. **Bare-wire buses first**, while the board is empty and easy to work on. Solid
-   tinned wire laid along the row, soldered at each hole it passes. Five runs:
-   +12 V (row 2), 0 V (rows 4, 17, 19), +5 V (rows 6, 18), plus a short 0 V spur on
-   row 8 that feeds the AVCC decoupling.
-2. **The 48 insulated links**, from the wire list. Tick each one off as you go.
-3. **The DIP socket** — notch to the LEFT — then the rest of the parts.
-4. **The four underside parts last:** C5 across socket pins 7 and 8, C8 across pins
-   21 and 22, Y1 across pins 9 and 10 with its leads formed to 2.54 mm, and C9 from
-   pin 20 up to the 0 V spur. These mount underneath, directly across the pins,
-   because that is the only way to get the leads short enough to work.
-5. **The chip goes in last of all**, after the smoke test.
+**How it's laid out**
 
-**How this was checked.** The layout is defined as data — every component pin at a
-hole coordinate, every bus, every link — and a script builds the actual electrical
-connectivity from it and compares that against the schematic netlist. It confirms
-all 22 nets are fully connected, that no two nets touch, that no spare pin is tied
-to anything, and that no lead sits under the socket body. The first version failed:
-ground came out in six separate islands. That is exactly the kind of fault this
-catches and eyeballing does not.
+- **Power along the top:** +12 V (row 2), 0 V (row 4), +5 V (row 6). The fan headers
+  sit on the top edge beside the +12 V and 0 V rows, so fan current goes straight
+  back to the input without passing through the logic ground at the bottom.
+- **U1 buck module on double-sided foam tape**, with four short wires to the rails.
+  Its real outline (about 22 × 17 mm) is kept clear. The pads differ between
+  suppliers, so read the module's own silkscreen for IN+/IN−/OUT+/OUT−.
+- **D1 (1N5402G) and the two C1 cans** stand on the far left of the top strip.
+- **Most resistors stand upright.** The solid circle is where the body sits; the
+  dotted line is the leg you bend over the top and down into the other hole.
+- **Panel, LCD and SW2 headers** sit along the bottom edge, all logic-level.
 
-**What is not checked** is physical fit. Lead spans are sanity-checked against
-component sizes, but verify your buck module's pad spacing before committing — those
-modules vary between suppliers, and U1 is drawn for pads 6 holes apart.
+**Build order**
+
+1. **Bare-wire buses first**, while the board is empty: solid tinned wire along the
+   row, soldered at each hole. Rows 2, 4, 6, 17, 18, 19, plus the short 0 V spur on
+   row 8.
+2. **The insulated links** from the wire list, ticking each off. The lines on the
+   drawing show *which holes join*, not the exact path: bend each wire around other
+   joints, and keep the iron off the insulation where a link crosses a bare bus.
+3. **The two solder bridges:** a small blob joining two neighbouring holes, at
+   (26,8)–(26,9) and (29,8)–(29,9).
+4. **The DIP socket** (notch LEFT), then the other parts.
+5. **The four underside parts:** C5 across socket pins 7–8, C8 across pins 21–22, Y1
+   across pins 9–10 (bend its legs inward), and C9 from pin 20 to the 0 V spur hole
+   directly above it. They mount underneath because that's the only way to keep the
+   legs short.
+6. **The power-up checks** (§7), and only then the chip.
+
+**How it was checked.** The layout is stored as data: every pin at a hole coordinate,
+plus every bus, link and bridge. The checker builds the real connectivity and compares
+it with the schematic netlist. Then it checks physical fit against typical catalogue
+part sizes:
+
+- one leg per hole
+- no leg under another part's body, and no two bodies overlapping
+- every resistor span is something a real resistor can make (1–2 holes standing, 4+
+  flat)
+- no wire drawn across a joint on a different net
+
+To prove the checker isn't just saying yes, it was fed eight deliberately broken
+layouts: a backwards D1, two legs in one hole, overlapping cans, a missing wire, a
+floating ground, and so on. It caught all eight.
+
+**What it can't check:** your actual parts. The body sizes are typical, not your
+specific components. If a capacitor can is bigger than 8 mm or your buck module is
+larger than 22 × 17 mm, place it by eye before soldering.
 
 ---
 
@@ -438,7 +491,7 @@ On the schematic every capacitor is tagged under its value: **ELEC** in orange,
 a `+`, a ceramic has two straight plates. There is a legend on sheet 1.
 
 **Electrolytic** (cylindrical cans, **polarised** — a stripe marks the negative leg):
-C1 470 µF, C2 100 µF, C10 10 µF, C11 220 µF.
+C1A and C1B 100 µF 50 V, C2 100 µF, C10 10 µF, C11 220 µF.
 
 **Ceramic** (small discs or blobs, no polarity, fit either way):
 C3, C5, C8, C9 at 100 nF, and C6, C7 at 22 pF.

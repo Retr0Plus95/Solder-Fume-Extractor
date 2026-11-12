@@ -3,7 +3,7 @@
    Firmware v1.2
    Target : bare ATmega328P-PU @ 16 MHz, 5 V, Arduino UNO bootloader
    Board  : Tools > Board > "Arduino Uno"
-   Library: LiquidCrystal_I2C by John Rickman (Library Manager)
+   Library: "LiquidCrystal I2C" by Frank de Brabander (Library Manager)
 
    Hardware pins (Arduino name -> DIP-28 physical pin)
      D2  (pin 4)  TACH_A   fan A sense, INT0, 10k pull-up, 4k7 series
@@ -40,8 +40,11 @@
    v1.2 changes
      - Soft ramp. Commanded duty now slews at 3 % per 25 ms instead of
        stepping, so the fans are eased up to speed rather than slammed
-       to 100 %. This lowers the peak supply current at power-on, which
-       matters if you are running a 1 A fast-blow fuse.
+       to 100 %. This spreads the current they draw while accelerating.
+       It cannot shape the first ~70 ms after switch-on: until this code
+       runs, the PWM line floats high and the fans see full demand. That
+       is the fail-safe working, and it is too short to trouble a
+       slow-blow fuse.
    ===================================================================== */
 
 #include <Wire.h>

@@ -23,14 +23,20 @@ Hardware bring-up and testing. The electronics are being verified before the fin
 ## Repository layout
 
 ```text
-firmware/                 Arduino firmware
-hardware/                 Future PCB/perfboard source files
+firmware/
+  SolderFumeExtractor/    Arduino sketch (open this folder in the Arduino IDE)
+  tests/                  Host-side logic tests
+  tools/                  Real avr-gcc build script
+hardware/
+  layout/                 Perfboard layout data, checker and renderer
 mechanical/               Future enclosure and 3D-print files
 docs/
   Build_Guide.md          Full build and wiring guide
   schematics/             Schematic and reference drawings
   layout/                 Perfboard and potentiometer drawings
 images/                   Project/reference images
+check.sh                  Runs every check (Git Bash on Windows)
+CLAUDE.md                 Notes for working on this with Claude Code
 ```
 
 ## Documentation
@@ -39,7 +45,9 @@ See [`docs/Build_Guide.md`](docs/Build_Guide.md) for the complete wiring, bill o
 
 ## Firmware
 
-The current firmware is in [`firmware/SolderFumeExtractor.ino`](firmware/SolderFumeExtractor.ino).
+The current firmware (v1.2) is in [`firmware/SolderFumeExtractor/SolderFumeExtractor.ino`](firmware/SolderFumeExtractor/SolderFumeExtractor.ino). It lives in a folder of the same name because the Arduino IDE requires that.
+
+Library: **LiquidCrystal I2C** by Frank de Brabander (Arduino Library Manager).
 
 The firmware uses an ATmega328P with a 16 MHz external crystal and the Arduino Uno bootloader/fuse configuration described in the build guide.
 
@@ -50,8 +58,15 @@ The design documentation includes:
 - Main system schematic
 - MCU pinout and programming reference
 - USB output and power budget
-- Verified 32 × 20 hole perfboard layout
+- 32 × 20 hole perfboard layout (Rev D), checked both electrically and for physical fit by `hardware/layout/pcb.py`
 - Speed potentiometer wiring detail
+
+## Checks
+
+`./check.sh` runs everything: the perfboard layout's electrical and physical check, a
+self-test proving that check catches deliberate faults, a redraw of sheet 4 from the
+checked data, the firmware logic tests, and a real AVR build if `arduino-cli` or
+`avr-gcc` is installed.
 
 ## Safety
 

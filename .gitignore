@@ -22,3 +22,10 @@ Thumbs.db
 *.tar.gz
 *.tgz
 *.bundle
+
+# Fetched by firmware/tools/build_avr.sh
+.deps/
+
+# Python
+__pycache__/
+*.pyc
