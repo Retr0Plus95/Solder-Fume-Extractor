@@ -59,8 +59,14 @@ hardware/layout/board_prev.py     the old Rev C layout (62 errors), kept as a te
 docs/schematics/                  SFE-01..03: SVG (source) + PNG
 docs/layout/                      SFE-04 (generated) + SFE-D1 pot detail: SVG + PNG
 docs/Build_Guide.md               the full build guide
+images/                           README copies of the five drawing PNGs + SFE-parts.jpg
+*.stl                             the four printed enclosure parts (owner's own models)
 check.sh                          runs everything; it must end "ALL CHECKS PASSED"
 ```
+
+**`images/SFE-*.png` are plain copies of the PNGs in `docs/`** for the README. After
+re-exporting a drawing (or after `check.sh` redraws SFE-04), copy it over the matching
+file in `images/` too, or the README shows a stale sheet.
 
 **SFE-01..03 and SFE-D1 are hand-maintained SVG.** The Python that first generated them
 was lost in a workspace reset. Edit their text directly, one change at a time, and

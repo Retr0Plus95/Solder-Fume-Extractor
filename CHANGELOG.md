@@ -26,6 +26,11 @@
 - Sketch moved into `firmware/SolderFumeExtractor/` (Arduino IDE folder rule).
 - Firmware header comments corrected; no code change (binary identical).
 
+### README and printed parts
+- README shows the drawings and a picture of the four 3D-printed parts with their sizes; the repository layout now matches the files.
+- The four enclosure STL files and an MIT LICENSE added.
+- README drawing copies in `images/` refreshed to Rev D.
+
 ### Initial
 
 - Initial project repository created from the SFE-2026 Rev C drawing set and Firmware v1.2.
