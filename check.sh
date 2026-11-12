@@ -11,6 +11,10 @@ step "checker self-test (must catch 8 deliberate faults)"
 ( cd hardware/layout && "$PY" test_checker.py ) || fail=1
 step "redraw sheet 4 from the checked layout data"
 ( cd hardware/layout && "$PY" render.py ../../docs/layout/SFE-04_Perfboard_Layout.svg ) || fail=1
+step "project file: board and build steps for Maker Forge Bench, from the checked layout"
+( cd hardware/layout && "$PY" export_board.py ../../forge-project.json ) || fail=1
+step "project file export test"
+( cd hardware/layout && "$PY" test_export.py ) || fail=1
 step "firmware logic tests (host)"
 if command -v g++ >/dev/null; then
   ( cd firmware/tests && g++ -std=c++17 -O1 -Wall -o "${TMPDIR:-/tmp}/sfe_test_logic" test_logic.cpp && "${TMPDIR:-/tmp}/sfe_test_logic" ) || fail=1

@@ -17,6 +17,10 @@
 - Sheet 3: stale fan-inrush text corrected for the v1.2 soft ramp.
 
 ### Tooling
+- `forge-project.json` now also holds the board (every part's holes, the buses, links, bridges and
+  connections) and the build order with the reason for each step, written from `board.py` and the
+  new `hardware/layout/build_steps.py` by `export_board.py`. `check.sh` runs it, so Bench always
+  shows the checked layout.
 - `forge-project.json`: the project file for Maker Forge Bench (the soldering drawing viewer).
   It lists the six sheets, and all 37 parts with value, job ("why"), and which way round the
   polarised ones go.

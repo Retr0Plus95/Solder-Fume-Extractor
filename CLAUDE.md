@@ -57,6 +57,10 @@ hardware/layout/pcb.py            electrical + physical checker
 hardware/layout/render.py         draws docs/layout/SFE-04 from board.py
 hardware/layout/test_checker.py   feeds the checker 8 broken boards; all must be caught
 hardware/layout/board_prev.py     the old Rev C layout (62 errors), kept as a test case
+hardware/layout/build_steps.py    the build order and the "why" of each step (edit the text here)
+hardware/layout/export_board.py   writes forge-project.json's board + build sections (check.sh runs it)
+hardware/layout/test_export.py    the export matches board.py; every board part in exactly one step
+forge-project.json                Maker Forge Bench's project file: parts by hand, board + build generated
 docs/schematics/                  SFE-01..03: SVG (source) + PNG
 docs/layout/                      SFE-04 (generated) + SFE-D1 pot detail: SVG + PNG
 docs/Build_Guide.md               the full build guide
