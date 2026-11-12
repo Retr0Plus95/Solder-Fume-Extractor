@@ -14,6 +14,7 @@ sys.path.insert(0, HERE)
 import board  # noqa: E402
 import build_steps  # noqa: E402
 import export_board  # noqa: E402
+import pcb  # noqa: E402
 
 B = board.BOARD
 
@@ -33,17 +34,42 @@ class TestBoardSection(unittest.TestCase):
             self.assertEqual(out["type"], part["type"], ref)
             self.assertEqual({k: list(v) for k, v in part["pins"].items()}, out["pins"], ref)
             self.assertEqual(out["side"], "bottom" if part["type"] == "underside" else "top", ref)
-            for extra in ("body", "D", "keepout", "round", "half"):
+            for extra in ("D", "keepout", "round", "half"):
                 if extra in part:
                     self.assertEqual(out[extra], list(part[extra]) if isinstance(part[extra], tuple) else part[extra], (ref, extra))
 
+    def test_resistor_mount_matches_the_checker(self):
+        # pcb.py lays a resistor flat when it spans 4+ holes (or board.py says so): only standing ones get a body
+        for ref, part in B["parts"].items():
+            out = self.s["parts"][ref]
+            if part["type"] != "res":
+                self.assertNotIn("mount", out, ref)
+                if "body" in part:
+                    self.assertEqual(out["body"], part["body"], ref)
+                continue
+            mount = pcb.res_mount(part)
+            self.assertEqual(out["mount"], mount, ref)
+            if mount == "flat":
+                self.assertNotIn("body", out, ref)
+            else:
+                self.assertEqual(out["body"], part["body"], ref)
+        self.assertEqual(self.s["parts"]["R4"]["mount"], "flat")
+        self.assertEqual(self.s["parts"]["R8"]["mount"], "stand")
+
+    def test_a_mount_override_in_board_py_is_kept(self):
+        b = dict(B, parts=dict(B["parts"], R8=dict(B["parts"]["R8"], mount="flat")))
+        out = export_board.board_section(b)["parts"]["R8"]
+        self.assertEqual(out["mount"], "flat")
+        self.assertNotIn("body", out)
+
     def test_buses_links_bridges_nets(self):
-        self.assertEqual(len(self.s["buses"]), len(B["buses"]))
+        self.assertEqual(self.s["buses"], [{"row": r, "from": a, "to": b, "net": net, "label": label, "side": "bottom"}
+                                           for (r, a, b, net, label) in B["buses"]])
         self.assertEqual(self.s["buses"][0], {"row": 2, "from": 2, "to": 32, "net": "P12V", "label": "+12 V", "side": "bottom"})
-        self.assertEqual(len(self.s["links"]), len(B["links"]))
-        self.assertEqual(len(self.s["bridges"]), 2)
+        self.assertEqual(self.s["links"], [{"path": [list(h) for h in link], "side": "bottom"} for link in B["links"]])
+        self.assertEqual(self.s["bridges"], [{"holes": [list(a), list(b)], "side": "bottom"} for (a, b) in B["bridges"]])
         self.assertEqual(self.s["bridges"][0], {"holes": [[26, 8], [26, 9]], "side": "bottom"})
-        self.assertEqual(set(self.s["nets"]), set(B["nets"]))
+        self.assertEqual(self.s["nets"], {name: [[ref, pin] for (ref, pin) in members] for name, members in B["nets"].items()})
         self.assertIn(["J2", "3"], self.s["nets"]["TACHA_F"])
         self.assertEqual(self.s["netLabels"]["P5V"], "+5 V")
         self.assertEqual(self.s["spare"], B["spare"])
@@ -78,11 +104,14 @@ class TestMain(unittest.TestCase):
         try:
             path = os.path.join(tmp, "forge-project.json")
             shutil.copy(os.path.join(HERE, "..", "..", "forge-project.json"), path)
-            before = json.load(open(path, encoding="utf-8"))
+            def read():
+                with open(path, encoding="utf-8") as f:
+                    return f.read()
+            before = json.loads(read())
             export_board.main(path)
-            first = open(path, encoding="utf-8").read()
+            first = read()
             export_board.main(path)
-            self.assertEqual(open(path, encoding="utf-8").read(), first, "running twice changes nothing")
+            self.assertEqual(read(), first, "running twice changes nothing")
             after = json.loads(first)
             for key in ("format", "version", "name", "revision", "sheets", "parts"):
                 self.assertEqual(after[key], before[key], key)

@@ -17,6 +17,8 @@
 - Sheet 3: stale fan-inrush text corrected for the v1.2 soft ramp.
 
 ### Tooling
+- The project file now says how each resistor is mounted (`mount`: `stand` or `flat`), by the
+  same rule as the layout checker, so Bench no longer says R4 stands when it lies flat.
 - `forge-project.json` now also holds the board (every part's holes, the buses, links, bridges and
   connections) and the build order with the reason for each step, written from `board.py` and the
   new `hardware/layout/build_steps.py` by `export_board.py`. `check.sh` runs it, so Bench always

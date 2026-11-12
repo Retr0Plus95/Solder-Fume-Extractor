@@ -13,6 +13,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
+import pcb  # noqa: E402
+
 EXTRAS = ("body", "D", "keepout", "round", "half")
 
 
@@ -32,6 +34,11 @@ def board_section(B):
             if extra in part:
                 value = part[extra]
                 out[extra] = list(value) if isinstance(value, tuple) else value
+        if part["type"] == "res":
+            # the same rule pcb.py's checker uses: flat when it spans 4+ holes, unless board.py says
+            out["mount"] = pcb.res_mount(part)
+            if out["mount"] == "flat":
+                out.pop("body", None)  # a flat resistor has no body over a pin
         parts[ref] = out
     labels = {}
     for (_, _, _, net, label) in B["buses"]:
