@@ -17,6 +17,9 @@
 - Sheet 3: stale fan-inrush text corrected for the v1.2 soft ramp.
 
 ### Tooling
+- `forge-project.json`: the project file for Maker Forge Bench (the soldering drawing viewer).
+  It lists the six sheets, and all 37 parts with value, job ("why"), and which way round the
+  polarised ones go.
 - `hardware/layout/`: layout as data (`board.py`), electrical + physical checker
   (`pcb.py`), renderer for sheet 4, and a self-test that feeds it 8 broken boards.
 - `firmware/tests/test_logic.cpp`: pot mapping, LCD string widths, stall/restart

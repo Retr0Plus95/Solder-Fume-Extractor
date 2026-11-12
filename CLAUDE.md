@@ -8,8 +8,9 @@ fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C L
 **Status:** drawing set **Rev D**, firmware **v1.2**. Never yet powered on real hardware.
 The owner is building it now on perfboard from sheet 4.
 
-**Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. The owner commits
-and pushes; ask before pushing anything.
+**Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. Claude commits and
+pushes its own work once `check.sh` passes (the owner's instruction, 2026-11-12), and says what
+was pushed. Ask first before anything destructive: force-pushing or rewriting history.
 
 ## Who you're working with
 
