@@ -25,6 +25,7 @@
   First real build: 0 warnings, 10.1 KB flash, 716 B RAM; 25 kHz confirmed in the binary.
 - Sketch moved into `firmware/SolderFumeExtractor/` (Arduino IDE folder rule).
 - Firmware header comments corrected; no code change (binary identical).
+- `render.py` now writes UTF-8, so `check.sh` no longer crashes on Windows at the sheet 4 redraw.
 
 ### README and printed parts
 - README shows the drawings and a picture of the four 3D-printed parts with their sizes; the repository layout now matches the files.

@@ -264,5 +264,8 @@ txt(78, ty + 548, "Coordinates are column,row. Order: bare-wire buses → links 
 txt(78, ty + 566, "Use insulated wire for every link. Where a link crosses a bare bus, keep the iron off the insulation.",
     11, DIM, "start", MONO)
 add("</svg>")
-open(sys.argv[1] if len(sys.argv) > 1 else "SFE-04_Perfboard_Layout.svg", "w").write("\n".join(o))
+# UTF-8 explicitly: on Windows the default is cp1252, which can't write the ≈ and → used above.
+with open(sys.argv[1] if len(sys.argv) > 1 else "SFE-04_Perfboard_Layout.svg", "w",
+          encoding="utf-8", newline="\n") as f:
+    f.write("\n".join(o))
 print("rendered", len(o), "elements,", len(rows_), "wire-list rows")
