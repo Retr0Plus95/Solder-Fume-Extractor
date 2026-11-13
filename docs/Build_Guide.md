@@ -1,5 +1,5 @@
 # Solder Fume Extractor — Build Guide
-**Drawing set SFE-2026, Rev D · Firmware v1.2** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · Sheet 4 perfboard layout · `SolderFumeExtractor.ino`
+**Drawing set SFE-2026, Rev D · Firmware v1.3** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · Sheet 4 perfboard layout · `SolderFumeExtractor.ino`
 
 ---
 
@@ -174,10 +174,11 @@ will not run this chip at all.
 `PWM_TOP` computes itself from `F_CPU`, so 16, 12 and 8 MHz all give exactly
 25.000 kHz. You only change the board selection, never the constant.
 
-> The fuse setting matters more than the bootloader. A factory chip runs on its
-> internal 8 MHz oscillator and will ignore your crystal — the PWM would come out
-> at 12.5 kHz and every timing in the sketch would be double. Burning the Uno
-> bootloader once fixes the fuses permanently.
+> The fuse setting matters more than the bootloader. A factory-fresh chip runs on its
+> internal oscillator divided by 8, so at **1 MHz**, and ignores your crystal: the PWM
+> would come out at about 1.6 kHz (a loud whine) and every timing in the sketch would
+> be 16 times too slow. Burning the Uno bootloader once fixes the fuses permanently
+> (external 16 MHz crystal, no divide-by-8). A chip taken out of an Uno is already set.
 
 Library needed: **LiquidCrystal I2C by Frank de Brabander** — in the Arduino IDE open
 *Tools → Manage Libraries*, search `LiquidCrystal I2C`, and install the one with that
@@ -257,7 +258,7 @@ to `CHANGE FILTER!`.
 |---|---|
 | Fans always at full, ignore the pot | D9 not reaching Q1's base, or Q1 in backwards (E/C swapped) |
 | Fans never spin | PWM line stuck low — Q1 shorted C–E, or R5 shorted |
-| Fans buzz or whine audibly | PWM isn't 25 kHz — fuses still set to internal 8 MHz oscillator (see §5) |
+| Fans buzz or whine audibly | PWM isn't 25 kHz: the chip isn't running on the 16 MHz crystal. A factory-fresh chip runs at 1 MHz until the Uno bootloader is burned (see §5) |
 | RPM reads 0 but the fan spins | Missing tach pull-up (R8/R9), or SENSE and PWM wires swapped |
 | RPM reads roughly double | Fan puts out 4 pulses/rev — set `PULSES_PER_REV` to 4 |
 | Backlight goes dark after 30 s | Normal — nudge the pot to wake it |

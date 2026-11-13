@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Firmware v1.3
+- The LCD can no longer stop the fans. A stuck I2C bus (loose display wire, bad joint,
+  noise) used to hang the chip forever, and in setup that happened with the PWM already
+  at 0 % and the watchdog still off. Every I2C transfer now gives up after 25 ms, and
+  the PWM is only set up after the display has started, so a hang leaves the fans at
+  100 %.
+- The pot has a small dead band: the fans start at 7 % and stop at 4 %, so a knob resting
+  on the edge can't flick them on and off with a full-power start burst each time.
+- Build guide: a factory-fresh ATmega328P runs at 1 MHz (internal 8 MHz divided by 8),
+  not 8 MHz, until the Uno bootloader sets the fuses. Corrected in §5 and the fault table.
+- `check.sh` now finds the arduino-cli inside the Arduino IDE 2, so the real firmware
+  build runs on Windows, and it fails if the sketch itself has any warning.
+
 ### Drawing set Rev D
 - Perfboard layout (sheet 4) redone. The Rev C layout was wired correctly, but a new
   physical-fit check found 62 problems: two legs in one hole (3 places), six resistors

@@ -5,7 +5,7 @@ pre-filter and an activated-carbon pad. A bare ATmega328P (programmed in an Ardu
 then moved to the board) reads a 10 k pot, makes 25 kHz PWM through a 2N2222A, reads both
 fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C LCD.
 
-**Status:** drawing set **Rev D**, firmware **v1.2**. Never yet powered on real hardware.
+**Status:** drawing set **Rev D**, firmware **v1.3**. Never yet powered on real hardware.
 The owner is building it now on perfboard from sheet 4.
 
 **Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. Claude commits and
@@ -45,6 +45,8 @@ was pushed. Ask first before anything destructive: force-pushing or rewriting hi
 | ADC is ratiometric (pot fed from +5 V, reference = AVCC) | Rail sag doesn't shift fan speed. *Ground offset* does, which is why the fan current returns along the top 0 V row. |
 | Soft ramp of 3 % per 25 ms | Spreads out the fans' acceleration current. It can't shape the first ~70 ms after switch-on: until the code runs, the PWM line floats high and the fans see full demand. That's the fail-safe. |
 | Every LCD string is exactly 16 characters | A 17-character string was once silently cut short. `test_logic.cpp` enforces this. |
+| `Wire.setWireTimeout(25000, true)`, and the PWM set up **after** the LCD starts | Wire waits forever by default. A stuck I2C bus must never leave the fans stopped: with the timeout it can't hang, and if the display init ever did hang, the PWM pin is still floating, so the fans run at 100 %. |
+| Pot dead band: on at 7 %, off at 4 % | A knob resting on the edge would otherwise flick the fans on and off, each time with a full-power start burst. |
 
 ## Files
 
@@ -95,6 +97,10 @@ confirm each replacement matches exactly once. Re-export the PNG after any chang
 - **Verified:**
   - Real avr-gcc 7.3 build against ArduinoCore-avr: 0 warnings at `-Wall -Wextra`,
     10.1 KB flash, 716 B RAM, builds at 16 and 12 MHz.
+  - v1.3 built on the owner's PC with the arduino-cli inside the Arduino IDE 2 (AVR core
+    1.8.8, their installed LiquidCrystal I2C): 0 sketch warnings, 8,836 B flash, 526 B RAM.
+    `check.sh` runs this build. The host logic tests need g++, which this PC doesn't have:
+    the v1.3 dead-band test was checked in a Python model of the same code.
   - The timer TOP value in the binary.
   - The pot mapping over all 1024 positions, every LCD string length, the
     stall/restart logic, and all 10,201 ramp transitions.

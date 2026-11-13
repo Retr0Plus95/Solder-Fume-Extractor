@@ -1,6 +1,6 @@
 /* =====================================================================
    SOLDER FUME EXTRACTOR  -  dual 4-pin PWM fan controller
-   Firmware v1.2
+   Firmware v1.3
    Target : bare ATmega328P-PU @ 16 MHz, 5 V, Arduino UNO bootloader
    Board  : Tools > Board > "Arduino Uno"
    Library: "LiquidCrystal I2C" by Frank de Brabander (Library Manager)
@@ -45,6 +45,18 @@
        runs, the PWM line floats high and the fans see full demand. That
        is the fail-safe working, and it is too short to trouble a
        slow-blow fuse.
+
+   v1.3 changes
+     - The LCD can no longer stop the fans. The I2C (Wire) library waits
+       forever by default, so a stuck display bus (a loose wire, a bad
+       joint, noise) used to hang the chip. In setup the watchdog isn't on
+       yet and the PWM was already set to 0 %, so the fans stayed stopped.
+       Now every I2C transfer gives up after 25 ms, and the PWM is only
+       set up after the display has started: if the display ever does
+       hang, the PWM pin is still floating and the fans run at 100 %.
+     - The pot's off/on point has a small dead band. The fans turn on at
+       7 % and off again at 4 %, so a knob resting right on the edge can't
+       flick them on and off (each time with a full-power start burst).
    ===================================================================== */
 
 #include <Wire.h>
@@ -59,7 +71,8 @@
 #define LCD_ROWS            2
 
 const uint8_t  MIN_DUTY_PCT      = 25;   // below this most fans stall
-const uint8_t  OFF_THRESHOLD_PCT =  4;   // pot below this = fans off
+const uint8_t  OFF_THRESHOLD_PCT =  4;   // pot at or below this = fans off
+const uint8_t  ON_THRESHOLD_PCT  =  7;   // from off, the pot must reach this to start
 const uint16_t KICK_MS           = 1200; // spin-up burst (includes the ramp)
 const uint16_t RESTART_KICK_MS   = 2200; // longer burst for a restart try
 const uint8_t  RAMP_STEP_PCT     =    3; // max duty change per 25 ms tick
@@ -202,7 +215,11 @@ uint8_t readDemand() {
   if (moved > 15) { potLastSeen = filtered; lastActivity = millis(); }
 
   uint8_t pct = (uint8_t)(((uint32_t)filtered * 100UL) / 1023UL);
-  if (pct <= OFF_THRESHOLD_PCT) return 0;
+  // a dead band between off and on, so a knob resting on the edge can't flap
+  static bool on = false;
+  if (pct <= OFF_THRESHOLD_PCT) { on = false; return 0; }
+  if (!on && pct < ON_THRESHOLD_PCT) return 0;
+  on = true;
   // remap the usable part of the travel onto MIN_DUTY..100
   uint32_t span = 100UL - OFF_THRESHOLD_PCT;
   uint32_t v = (uint32_t)(pct - OFF_THRESHOLD_PCT) * (100UL - MIN_DUTY_PCT);
@@ -269,14 +286,17 @@ void setup() {
   digitalWrite(PIN_LED_A, HIGH);
   digitalWrite(PIN_LED_B, HIGH);
 
-  setupPwm25kHz();
-
+  // The display first, while the PWM pin is still a floating input: if the
+  // I2C bus hangs here, Q1 stays off and the fans run at 100 % (fail-safe).
   Wire.begin();
+  Wire.setWireTimeout(25000, true);   // give up after 25 ms, reset the bus: never hang
   lcd.init();
   lcd.backlight();
   lcd.clear();
   lcd.setCursor(0, 0); lcd.print(F(" FUME EXTRACTOR "));
-  lcd.setCursor(0, 1); lcd.print(F("  SFE-2026 v1.2 "));
+  lcd.setCursor(0, 1); lcd.print(F("  SFE-2026 v1.3 "));
+
+  setupPwm25kHz();
 
   loadRuntime();
   potAccum    = (int32_t)analogRead(PIN_POT) << 4;   // preload the filter

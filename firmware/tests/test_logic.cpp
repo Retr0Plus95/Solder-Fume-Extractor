@@ -12,7 +12,7 @@ static int failures = 0;
 #define CHECK(cond, ...) do { if (!(cond)) { failures++; printf("  FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
 // ---- copied from sketch -------------------------------------------------
-const uint8_t  MIN_DUTY_PCT = 25, OFF_THRESHOLD_PCT = 4, RAMP_STEP_PCT = 3;
+const uint8_t  MIN_DUTY_PCT = 25, OFF_THRESHOLD_PCT = 4, ON_THRESHOLD_PCT = 7, RAMP_STEP_PCT = 3;
 const uint16_t STALL_RPM = 250, FILTER_LIFE_HOURS = 120;
 const uint8_t  STALL_SECONDS = 3, MAX_RESTARTS = 3;
 
@@ -27,7 +27,10 @@ uint8_t readDemand() {
   if (filtered < 0) filtered = 0;
   if (filtered > 1023) filtered = 1023;
   uint8_t pct = (uint8_t)(((uint32_t)filtered * 100UL) / 1023UL);
-  if (pct <= OFF_THRESHOLD_PCT) return 0;
+  static bool on = false;
+  if (pct <= OFF_THRESHOLD_PCT) { on = false; return 0; }
+  if (!on && pct < ON_THRESHOLD_PCT) return 0;
+  on = true;
   uint32_t span = 100UL - OFF_THRESHOLD_PCT;
   uint32_t v = (uint32_t)(pct - OFF_THRESHOLD_PCT) * (100UL - MIN_DUTY_PCT);
   return (uint8_t)(MIN_DUTY_PCT + (v / span));
@@ -71,6 +74,23 @@ static void test_pot() {
   }
   CHECK(maxd == 100, "full pot gives %d%%, wanted 100", maxd);
   printf("  pot filter + mapping checked over 1024 positions\n");
+}
+
+// the dead band: from off, 5-6 % stays off and 7 % starts; once on, 5 % stays on and 4 % stops
+static int demandAt(int pct) {
+  int adc = (pct * 1023 + 99) / 100;           // the lowest ADC value that reads as pct
+  potAccum = (int32_t)adc << 4; fakeAdc = adc;
+  return readDemand();
+}
+static void test_dead_band() {
+  CHECK(demandAt(0) == 0, "0 %% must be off");
+  CHECK(demandAt(5) == 0, "from off, 5 %% must stay off");
+  CHECK(demandAt(6) == 0, "from off, 6 %% must stay off");
+  CHECK(demandAt(7) >= MIN_DUTY_PCT, "7 %% must start the fans");
+  CHECK(demandAt(5) >= MIN_DUTY_PCT, "once on, 5 %% must stay on");
+  CHECK(demandAt(4) == 0, "4 %% must stop the fans");
+  CHECK(demandAt(6) == 0, "after stopping, 6 %% must stay off again");
+  printf("  pot dead band: on at 7 %%, off at 4 %%\n");
 }
 
 static void test_lcd() {
@@ -124,7 +144,8 @@ static void test_ramp() {
 }
 
 int main() {
-  test_pot(); test_lcd(); test_stall(); test_ramp();
+  test_pot(); test_dead_band();
+  test_lcd(); test_stall(); test_ramp();
   printf(failures ? "\n%d FAILURE(S)\n" : "\nALL LOGIC TESTS PASSED\n", failures);
   return failures ? 1 : 0;
 }

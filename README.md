@@ -20,7 +20,7 @@ A custom solder fume extractor built to provide adjustable fume capture for an e
 
 ## Project status
 
-Hardware bring-up and testing, drawing set SFE-2026 Rev D and firmware v1.2. The electronics are being verified before the final perfboard and enclosure assembly. The enclosure parts are ready to print.
+Hardware bring-up and testing, drawing set SFE-2026 Rev D and firmware v1.3. The electronics are being verified before the final perfboard and enclosure assembly. The enclosure parts are ready to print.
 
 ## Pictures
 
@@ -46,7 +46,7 @@ Hardware bring-up and testing, drawing set SFE-2026 Rev D and firmware v1.2. The
 
 ```text
 firmware/
-  SolderFumeExtractor/    Arduino sketch, v1.2 (open this folder in the Arduino IDE)
+  SolderFumeExtractor/    Arduino sketch, v1.3 (open this folder in the Arduino IDE)
   tests/                  Host-side logic tests
   tools/                  Real avr-gcc build script
 hardware/
@@ -68,7 +68,7 @@ See [`docs/Build_Guide.md`](docs/Build_Guide.md) for the complete wiring, bill o
 
 ## Firmware
 
-The current firmware (v1.2) is in [`firmware/SolderFumeExtractor/SolderFumeExtractor.ino`](firmware/SolderFumeExtractor/SolderFumeExtractor.ino). It lives in a folder of the same name because the Arduino IDE requires that.
+The current firmware (v1.3) is in [`firmware/SolderFumeExtractor/SolderFumeExtractor.ino`](firmware/SolderFumeExtractor/SolderFumeExtractor.ino). It lives in a folder of the same name because the Arduino IDE requires that.
 
 Library: **LiquidCrystal I2C** by Frank de Brabander (Arduino Library Manager).
 

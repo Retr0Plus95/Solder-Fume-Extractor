@@ -20,8 +20,15 @@ if command -v g++ >/dev/null; then
   ( cd firmware/tests && g++ -std=c++17 -O1 -Wall -o "${TMPDIR:-/tmp}/sfe_test_logic" test_logic.cpp && "${TMPDIR:-/tmp}/sfe_test_logic" ) || fail=1
 else echo "skipped: no g++"; fi
 step "firmware: real AVR build"
-if command -v arduino-cli >/dev/null; then
-  arduino-cli compile --fqbn arduino:avr:uno --warnings all firmware/SolderFumeExtractor || fail=1
+# arduino-cli on the PATH, or the copy inside the Arduino IDE 2 on Windows
+CLI=$(command -v arduino-cli || true)
+IDE_CLI="${LOCALAPPDATA:-}/Programs/Arduino IDE/resources/app/lib/backend/resources/arduino-cli.exe"
+[ -z "$CLI" ] && [ -x "$IDE_CLI" ] && CLI="$IDE_CLI"
+if [ -n "$CLI" ]; then
+  out=$("$CLI" compile --fqbn arduino:avr:uno --warnings all firmware/SolderFumeExtractor 2>&1) || { echo "$out"; fail=1; }
+  echo "$out" | grep -E "Sketch uses|Global variables"
+  # the libraries' own warnings are theirs; the sketch must have none (rule 3)
+  if echo "$out" | grep -E "SolderFumeExtractor\.ino:[0-9]+:[0-9]+: warning" ; then echo "the sketch has warnings"; fail=1; fi
 elif command -v avr-gcc >/dev/null; then firmware/tools/build_avr.sh || fail=1
 else echo "skipped: neither arduino-cli nor avr-gcc installed"; fi
 echo; [ $fail -eq 0 ] && echo "ALL CHECKS PASSED" || echo "SOMETHING FAILED - read above"
