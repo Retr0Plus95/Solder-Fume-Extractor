@@ -29,3 +29,6 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+
+# Your own board photos for Maker Forge Bench (kept on this computer, never committed)
+my-board/

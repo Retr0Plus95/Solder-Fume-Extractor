@@ -17,6 +17,8 @@
 - Sheet 3: stale fan-inrush text corrected for the v1.2 soft ramp.
 
 ### Tooling
+- `my-board/` is ignored by git: photos of your own board for Bench's "Your board" view stay on
+  your computer.
 - The project file now says how each resistor is mounted (`mount`: `stand` or `flat`), by the
   same rule as the layout checker, so Bench no longer says R4 stands when it lies flat.
 - `forge-project.json` now also holds the board (every part's holes, the buses, links, bridges and
