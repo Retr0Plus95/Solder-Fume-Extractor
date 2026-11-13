@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### First power-up (the owner's build, 2026-11-13)
+- Build guide fault table: `!BOTH FANS STOP` while the fans spin means R12 / R13 (the
+  4.7 kΩ links from the tach lines to chip pins 4 and 5) are missing or a tach wire is
+  loose. Fans that ignore the pot can also be a PWM wire that isn't connected. The
+  full-speed restart bursts in the first 15 s are normal.
+- Build guide: the MP1584's trimmer is multi-turn; notes on fitting an L7805 instead
+  (fine for the 5 V side, not for the USB port).
+
 ### Firmware v1.3
 - The LCD can no longer stop the fans. A stuck I2C bus (loose display wire, bad joint,
   noise) used to hang the chip forever, and in setup that happened with the PWM already

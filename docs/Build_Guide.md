@@ -256,7 +256,9 @@ to `CHANGE FILTER!`.
 
 | Symptom | Likely cause |
 |---|---|
-| Fans always at full, ignore the pot | D9 not reaching Q1's base, or Q1 in backwards (E/C swapped) |
+| Fans always at full, ignore the pot | D9 not reaching Q1's base, Q1 in backwards (E/C swapped), or the fans' PWM wire (pin 4, blue) not reaching Q1's collector: a fan runs flat out when its PWM wire is left open. Check: the DC voltage on the PWM wire should fall as you turn the pot down (a meter shows the average, about duty × 5 V) |
+| Fans run full in bursts for the first 15 s or so | Normal while the chip can't hear a fan: it tries three 2.2 s full-speed restarts, then shows the fault and follows the pot again |
+| `!BOTH FANS STOP` or `!FAN A NO SIGNAL`, but the fans spin | No speed signal reaches the chip. R12 / R13 (4.7 kΩ) missing between the fan's tach line (fan pin 3, after R8 / R9) and chip pin 4 / pin 5, or a loose tach wire. Without them pins 4 and 5 float, and touching the wires makes the reading jump |
 | Fans never spin | PWM line stuck low — Q1 shorted C–E, or R5 shorted |
 | Fans buzz or whine audibly | PWM isn't 25 kHz: the chip isn't running on the 16 MHz crystal. A factory-fresh chip runs at 1 MHz until the Uno bootloader is burned (see §5) |
 | RPM reads 0 but the fan spins | Missing tach pull-up (R8/R9), or SENSE and PWM wires swapped |
@@ -268,6 +270,7 @@ to `CHANGE FILTER!`.
 | Fuse blows the moment you power up | Supply polarity reversed — D1 did its job |
 | Fuse blows only sometimes at power-on | Fast-blow fitted; it must be slow-blow (T-rated) |
 | U1 chirps and won't start | Too much output capacitance — reduce C11 |
+| U1's output doesn't move when you turn its trimmer | The MP1584's trimmer is multi-turn: it can take 10 or more turns before the voltage changes. Set it with the module powered on its own and a meter on OUT, before anything else is connected |
 | D1 running hot | It is in backwards, or wired in series instead of as a shunt |
 | Fan restarts 3× then shows FAULT | Genuinely obstructed, or the bearing has gone |
 | Fan stops at low settings | Raise `MIN_DUTY_PCT` to 30 or 35; some fans stall below 30 % |
@@ -285,6 +288,11 @@ to `CHANGE FILTER!`.
   makes the tach signal unusable.
 - **Free pins** D4, D7, D8, D10–D13, A1–A3 are broken out for a filter-reset button,
   a buzzer on fault, or a thermistor.
+- **An L7805 instead of U1:** it can power the 5 V side alone. Facing its printed side,
+  the legs are IN, GND, OUT. It drops 7 V as heat, about 0.5 W at this load: warm, fine
+  without a heatsink. It can't power the USB port (that would be 7 W), so go back to a
+  buck module before building sheet 3. If it's ever fitted backwards, the 5 V rail sees
+  nearly 12 V: check C2 (10 V) for bulging and replace it if in doubt.
 
 
 ---

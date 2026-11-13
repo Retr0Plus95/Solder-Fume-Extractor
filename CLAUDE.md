@@ -5,8 +5,9 @@ pre-filter and an activated-carbon pad. A bare ATmega328P (programmed in an Ardu
 then moved to the board) reads a 10 k pot, makes 25 kHz PWM through a 2N2222A, reads both
 fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C LCD.
 
-**Status:** drawing set **Rev D**, firmware **v1.3**. Never yet powered on real hardware.
-The owner is building it now on perfboard from sheet 4.
+**Status:** drawing set **Rev D**, firmware **v1.3**. First powered on the owner's build
+2026-11-13 (their own placement on a 7×9 cm board, not sheet 4's): the chip runs and the LCD
+shows text. Still being debugged; see "Owner's build" below.
 
 **Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. Claude commits and
 pushes its own work once `check.sh` passes (the owner's instruction, 2026-11-12), and says what
@@ -90,7 +91,8 @@ confirm each replacement matches exactly once. Re-export the PNG after any chang
 4. Keep the BOM consistent across sheet 1, sheet 2, sheet 4 and guide §3. After changing
    a part, grep for its part number everywhere.
 5. Add a line to `CHANGELOG.md` for anything a builder would notice.
-6. Don't claim anything works on hardware. Nothing has been bench-tested yet.
+6. Don't claim anything works on hardware beyond what the owner has reported (see
+   "Owner's build"). Nothing has been bench-tested by us.
 
 ## Verified vs not verified
 
@@ -105,11 +107,28 @@ confirm each replacement matches exactly once. Re-export the PNG after any chang
   - The pot mapping over all 1024 positions, every LCD string length, the
     stall/restart logic, and all 10,201 ramp transitions.
   - The layout's netlist, and its physical fit using typical part sizes.
+- **Reported by the owner on their build (2026-11-13):** the chip runs on the board at
+  16 MHz, the LCD answers at 0x27 and shows v1.3's text, the pot sweeps 0–5 V at pin 23.
+  Blink, an I2C scanner and v1.3 also ran with the chip in their Uno.
 - **Not verified:**
-  - Anything on real hardware.
+  - Fan speed control, tach reading and fault handling on real hardware.
   - The buck module's real pad positions (they vary; the module is taped down and wired).
   - The exact body sizes of the owner's parts.
   - Upload, bootloader and watchdog behaviour on their Uno.
+
+## Owner's build (2026-11-13)
+
+- **U1 swapped for an L7805CV** (they thought the MP1584's trimmer was broken; it's
+  multi-turn). The 7805 was first fitted backwards, so the 5 V rail saw about 11.8 V:
+  C2 is rated 10 V. Fine for now; the USB port needs a buck module again.
+- **Fixed by them:** a joint bridging the 12 V input past the switch; no supply wires
+  on chip pins 7/20 (+5 V) and 8/22 (0 V); C4 wired in series with the pot wiper (it
+  goes from pin 23 to 0 V).
+- **Open:** R12 / R13 not fitted, so the LCD shows `!BOTH FANS STOP` (pins 4 and 5
+  float). They also report the fans always at 100 % — v1.3 follows the pot once the
+  fault latches, so if that persists, check the PWM path (pin 15 → R5 → Q1, Q1's
+  collector → the fans' pin 4). A possible bridge between chip pins 23 and 24 (A1 is
+  unused). Check the 12 V rail under both fans.
 
 ## Good next steps
 
