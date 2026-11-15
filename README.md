@@ -1,4 +1,4 @@
-# The Mega Extractor 5000
+# Sir Sucks-a-Lot
 
 A solder fume extractor for the electronics bench: two 120 mm PWM fans pull the fumes
 through a mesh pre-filter and an activated-carbon pad. A bare ATmega328P sets the fan
@@ -42,7 +42,7 @@ back: at 64 % they ran at 1800 and 1830 rpm. Drawing set SFE-2026 **Rev E**, fir
   </tr>
   <tr>
     <td><img src="images/photos/soldering-timelapse.gif" alt="Soldering the bare-wire buses on the perfboard, sped up"><br><b>Building it:</b> soldering the bus wires, 6× speed</td>
-    <td><img src="images/photos/poster.jpg" alt="Project poster: The Mega Extractor 5000"><br><b>The poster</b></td>
+    <td><img src="images/photos/poster.jpg" alt="Project poster: Sir Sucks-a-Lot, solder fume extractor, over the sheet 1 schematic"><br><b>The poster</b> (sheet 1 as it was at Rev D)</td>
   </tr>
 </table>
 
@@ -141,4 +141,6 @@ power-up and continuity checks before installing the microcontroller.
 
 ## License
 
-MIT
+[MIT](LICENSE): open source, all of it. That covers the firmware, the drawings, the
+docs and the 3D-printed case (the four `.stl` files). Build one, change it, sell it; just
+keep the copyright notice with it.
