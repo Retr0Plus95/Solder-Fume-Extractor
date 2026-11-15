@@ -141,4 +141,6 @@ power-up and continuity checks before installing the microcontroller.
 
 ## License
 
-MIT
+[MIT](LICENSE): open source, all of it. That covers the firmware, the drawings, the
+docs and the 3D-printed case (the four `.stl` files). Build one, change it, sell it; just
+keep the copyright notice with it.
