@@ -6,7 +6,7 @@ then moved to the board) reads a 10 k pot, makes 25 kHz PWM through a 2N2222A, r
 fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C LCD.
 
 **Status:** drawing set **Rev E**, firmware **v1.3** (pot on A2). The owner's prototype
-("The Mega Extractor 5000"; the name may change) is **finished and working** as of
+(named **"Sir Sucks-a-Lot"** on 2026-11-15, first called "The Mega Extractor 5000") is **finished and working** as of
 2026-11-14: their own placement on a 7×9 cm board, not sheet 4's. See "Owner's build" below
 and `docs/Build_Log.md`.
 

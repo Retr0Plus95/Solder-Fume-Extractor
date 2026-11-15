@@ -1,6 +1,6 @@
 # Build log — the prototype
 
-The first unit was finished on 14 November 2026 and works: the knob sets both fans'
+The first unit, Sir Sucks-a-Lot, was finished on 14 November 2026 and works: the knob sets both fans'
 speed and the LCD reads them back (64 % gave 1800 and 1830 rpm). Getting there took two
 days of debugging and seven faults. Six were wiring, soldering or assembly mistakes, not
 bad parts; the seventh was a damaged input pin on the chip.
