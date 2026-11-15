@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### The prototype is finished — drawing set Rev E (2026-11-15)
+- The first unit works: the knob sets both fans and the LCD reads them back (64 % →
+  1800 and 1830 rpm). [`docs/Build_Log.md`](docs/Build_Log.md) records the seven faults
+  found during bring-up, how the prototype differs from the drawings, its loose ends and
+  the lessons.
+- **The speed knob moved from A0 (pin 23) to A2 (pin 25)**, after the prototype chip's A0
+  input was damaged. Firmware line 94 is `PIN_POT = A2` (the firmware stays v1.3, matching
+  what is on the prototype); sheets 1, 2 and the pot detail, the perfboard layout and the
+  Maker Forge project file all follow. Build an early board with the pot on pin 23? Move
+  the wire to pin 25, or set `PIN_POT` back to `A0`.
+- README: photos and short clips of the finished build, an as-built table, the status
+  changed to finished. The photos are cropped to the hardware.
+- Build guide: points to the build log up front; pin table and free-pin list updated.
+- `check.sh` now runs `build_avr.sh` through `bash`, and both scripts are marked
+  executable in git, so the real AVR build also runs from a fresh clone on Linux or macOS.
+
 ### First power-up (the owner's build, 2026-11-13)
 - Build guide fault table: `!BOTH FANS STOP` while the fans spin means R12 / R13 (the
   4.7 kΩ links from the tach lines to chip pins 4 and 5) are missing or a tach wire is

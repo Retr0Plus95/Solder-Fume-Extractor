@@ -29,7 +29,7 @@ if [ -n "$CLI" ]; then
   echo "$out" | grep -E "Sketch uses|Global variables"
   # the libraries' own warnings are theirs; the sketch must have none (rule 3)
   if echo "$out" | grep -E "SolderFumeExtractor\.ino:[0-9]+:[0-9]+: warning" ; then echo "the sketch has warnings"; fail=1; fi
-elif command -v avr-gcc >/dev/null; then firmware/tools/build_avr.sh || fail=1
+elif command -v avr-gcc >/dev/null; then bash firmware/tools/build_avr.sh || fail=1
 else echo "skipped: neither arduino-cli nor avr-gcc installed"; fi
 echo; [ $fail -eq 0 ] && echo "ALL CHECKS PASSED" || echo "SOMETHING FAILED - read above"
 exit $fail

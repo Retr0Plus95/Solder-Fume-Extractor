@@ -1,5 +1,7 @@
 # Solder Fume Extractor — Build Guide
-**Drawing set SFE-2026, Rev D · Firmware v1.3** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · Sheet 4 perfboard layout · `SolderFumeExtractor.ino`
+**Drawing set SFE-2026, Rev E · Firmware v1.3** · Sheet 1 schematic · Sheet 2 reference · Sheet 3 USB port · Sheet 4 perfboard layout · `SolderFumeExtractor.ino`
+
+> **The first unit is built and working.** It differs from these drawings in a few places (an L7805 instead of the buck module, no R12/R13 or C4 yet, its own board layout). See [the build log](Build_Log.md) for those differences and the seven faults found while bringing it up — read its *Lessons* before you power your own board.
 
 ---
 
@@ -108,9 +110,9 @@ pinout map shows both as well — amber for the Arduino name, blue for the net.
 | 20 | AVCC | — | +5 V, C9 100 nF to GND |
 | 21 | AREF | — | C8 100 nF to GND (nothing else) |
 | 22 | GND | — | 0 V |
-| 23 | PC0 | A0 | **POT** — RV1 wiper, C4 100 nF to GND |
+| 23 | PC0 | A0 | spare (the pot was here until Rev E) |
 | 24 | PC1 | A1 | spare |
-| 25 | PC2 | A2 | spare |
+| 25 | PC2 | A2 | **POT** — RV1 wiper, C4 100 nF to GND |
 | 26 | PC3 | A3 | spare |
 | 27 | PC4 / SDA | A4 | LCD backpack SDA |
 | 28 | PC5 / SCL | A5 | LCD backpack SCL |
@@ -286,7 +288,7 @@ to `CHANGE FILTER!`.
 - **3-pin fans:** they have no PWM input. Delete Q1/R5/R6/R7 and switch the +12 V
   rail with a logic-level MOSFET low-side instead — but note that PWM'ing the supply
   makes the tach signal unusable.
-- **Free pins** D4, D7, D8, D10–D13, A1–A3 are broken out for a filter-reset button,
+- **Free pins** D4, D7, D8, D10–D13, A0, A1 and A3 are broken out for a filter-reset button,
   a buzzer on fault, or a thermistor.
 - **An L7805 instead of U1:** it can power the 5 V side alone. Facing its printed side,
   the legs are IN, GND, OUT. It drops 7 V as heat, about 0.5 W at this load: warm, fine
@@ -426,7 +428,7 @@ No firmware change. The MCU has no knowledge of this port.
 
 ---
 
-## 13. Perfboard layout (sheet 4, Rev D)
+## 13. Perfboard layout (sheet 4, Rev E)
 
 A component placement on a 32 × 20 hole board, about 81 × 51 mm. It is checked both
 electrically and physically by `hardware/layout/pcb.py`.
@@ -440,7 +442,10 @@ insulated link.
 holes long (too short to lie flat, too far to stand up), the buck module drawn far
 too small with R4 underneath it, D1 overlapping C1, R5 under the socket, and wires
 drawn straight across other joints. If you soldered anything from the Rev C layout,
-compare it against Rev D before going further.
+compare it against the current layout before going further.
+
+**What changed in Rev E.** Only the pot's wire: it now goes to chip pin 25 (A2)
+instead of pin 23 (A0). Nothing else on the layout moved.
 
 **How it's laid out**
 

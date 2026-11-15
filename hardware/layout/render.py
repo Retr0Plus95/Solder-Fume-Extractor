@@ -44,7 +44,7 @@ def tbox(x, y, s, size, c, anchor="middle", weight="bold"):
 add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">')
 add(f'<rect width="{W}" height="{H}" fill="{BG}"/>')
 rect(24, 24, W - 48, H - 48, LINE, 3); rect(36, 36, W - 72, H - 72, LINE, 1)
-txt(60, 92, "SOLDER FUME EXTRACTOR — PERFBOARD LAYOUT  ·  REV D", 22, LINE, "start", SANS, "bold", "1.2")
+txt(60, 92, "SOLDER FUME EXTRACTOR — PERFBOARD LAYOUT  ·  REV E", 22, LINE, "start", SANS, "bold", "1.2")
 txt(60, 118, "component side, looking down on the parts · 0.1 in grid · 32 × 20 holes ≈ 81 × 51 mm "
               "· bodies drawn to scale", 12.5, DIM, "start", MONO)
 txt(60, 140, "Checked by pcb.py: every net connected, no shorts, one leg per hole, no part under another, "

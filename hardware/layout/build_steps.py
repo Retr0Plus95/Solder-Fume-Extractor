@@ -44,7 +44,7 @@ STEPS = [
     dict(id="panel", title="The panel side", what=[], parts=["R2", "R3", "C4", "J5", "J4", "J6"], why=(
         "Headers along the bottom edge: J5 to the front panel (both LEDs and the speed knob), J4 to the "
         "LCD, J6 to push-button SW2. R2 and R3 limit the LEDs' current; C4 smooths the knob's voltage into "
-        "pin 23 so the reading doesn't jitter.")),
+        "pin 25 (A2) so the reading doesn't jitter.")),
     dict(id="underside", title="The underside parts", what=[], parts=["C5", "C8", "Y1", "C9"], why=(
         "C5 across socket pins 7 and 8, C8 across 21 and 22, Y1 across 9 and 10 (legs bent inward), and C9 "
         "from pin 20 to the 0 V spur hole directly above it. They go underneath because that's the only "

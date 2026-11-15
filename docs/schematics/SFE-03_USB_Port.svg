@@ -317,7 +317,7 @@
 <text x="1286" y="1138" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">DRAWING No.</text>
 <text x="1286" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">SFE-2026-03</text>
 <text x="1504" y="1138" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">REV</text>
-<text x="1504" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">D</text>
+<text x="1504" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">E</text>
 <text x="1286" y="1178" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">SUPPLY</text>
 <text x="1286" y="1194" font-family="monospace" font-size="12" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">12 VDC 2 A</text>
 <text x="1504" y="1178" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">USB OUT</text>
