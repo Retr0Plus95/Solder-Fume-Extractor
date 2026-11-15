@@ -233,7 +233,7 @@
 <line x1="221" y1="680" x2="229" y2="680" stroke="#e8f1fb" stroke-width="2.8" stroke-linecap="round"/>
 <polygon points="270,610 284,597 346,597 346,623 284,623" fill="none" stroke="#7fd8ff" stroke-width="2"/>
 <text x="315.0" y="615" font-family="monospace" font-size="12.5" fill="#7fd8ff" text-anchor="middle" font-weight="bold" letter-spacing="0">POT</text>
-<text x="272" y="588" font-family="monospace" font-size="10" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="0">→ U2 pin 23 (A0)</text>
+<text x="272" y="588" font-family="monospace" font-size="10" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="0">→ U2 pin 25 (A2)</text>
 <text x="108" y="738" font-family="monospace" font-size="10" fill="#8fe388" text-anchor="start" font-weight="normal" letter-spacing="0">2 = wiper (centre leg)</text>
 <text x="108" y="720" font-family="monospace" font-size="11" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="0">SPEED SET</text>
 <rect x="400" y="560" width="140" height="190" rx="0" fill="none" stroke="#e8f1fb" stroke-width="2.8"/>
@@ -488,12 +488,12 @@
 <text x="1115.0" y="285" font-family="monospace" font-size="12.5" fill="#7fd8ff" text-anchor="middle" font-weight="bold" letter-spacing="0">SDA</text>
 <polygon points="1070,316 1084,303 1146,303 1146,329 1084,329" fill="none" stroke="#9fc3e3" stroke-width="2"/>
 <text x="1115.0" y="321" font-family="monospace" font-size="12.5" fill="#9fc3e3" text-anchor="middle" font-weight="bold" letter-spacing="0">SPARE</text>
-<polygon points="1070,352 1084,339 1146,339 1146,365 1084,365" fill="none" stroke="#9fc3e3" stroke-width="2"/>
-<text x="1115.0" y="357" font-family="monospace" font-size="12.5" fill="#9fc3e3" text-anchor="middle" font-weight="bold" letter-spacing="0">SPARE</text>
+<polygon points="1070,352 1084,339 1146,339 1146,365 1084,365" fill="none" stroke="#7fd8ff" stroke-width="2"/>
+<text x="1115.0" y="357" font-family="monospace" font-size="12.5" fill="#7fd8ff" text-anchor="middle" font-weight="bold" letter-spacing="0">POT</text>
 <polygon points="1070,388 1084,375 1146,375 1146,401 1084,401" fill="none" stroke="#9fc3e3" stroke-width="2"/>
 <text x="1115.0" y="393" font-family="monospace" font-size="12.5" fill="#9fc3e3" text-anchor="middle" font-weight="bold" letter-spacing="0">SPARE</text>
-<polygon points="1070,424 1084,411 1146,411 1146,437 1084,437" fill="none" stroke="#7fd8ff" stroke-width="2"/>
-<text x="1115.0" y="429" font-family="monospace" font-size="12.5" fill="#7fd8ff" text-anchor="middle" font-weight="bold" letter-spacing="0">POT</text>
+<polygon points="1070,424 1084,411 1146,411 1146,437 1084,437" fill="none" stroke="#9fc3e3" stroke-width="2"/>
+<text x="1115.0" y="429" font-family="monospace" font-size="12.5" fill="#9fc3e3" text-anchor="middle" font-weight="bold" letter-spacing="0">SPARE</text>
 <polygon points="1070,532 1084,519 1146,519 1146,545 1084,545" fill="none" stroke="#7fd8ff" stroke-width="2"/>
 <text x="1115.0" y="537" font-family="monospace" font-size="12.5" fill="#7fd8ff" text-anchor="middle" font-weight="bold" letter-spacing="0">+5V</text>
 <polygon points="1070,568 1084,555 1146,555 1146,581 1084,581" fill="none" stroke="#9fc3e3" stroke-width="2"/>
@@ -765,7 +765,7 @@
 <text x="80" y="1087" font-family="monospace" font-size="11.5" fill="#7fd8ff" text-anchor="start" font-weight="bold" letter-spacing="0">+5V</text>
 <text x="180" y="1087" font-family="monospace" font-size="11.5" fill="#e8f1fb" text-anchor="start" font-weight="normal" letter-spacing="0">Logic rail from U1</text>
 <text x="660" y="1087" font-family="monospace" font-size="11.5" fill="#7fd8ff" text-anchor="start" font-weight="bold" letter-spacing="0">POT</text>
-<text x="760" y="1087" font-family="monospace" font-size="11.5" fill="#e8f1fb" text-anchor="start" font-weight="normal" letter-spacing="0">RV1 wiper → U2 pin 23 (A0)</text>
+<text x="760" y="1087" font-family="monospace" font-size="11.5" fill="#e8f1fb" text-anchor="start" font-weight="normal" letter-spacing="0">RV1 wiper → U2 pin 25 (A2)</text>
 <text x="80" y="1106" font-family="monospace" font-size="11.5" fill="#7fd8ff" text-anchor="start" font-weight="bold" letter-spacing="0">PWM_CTL</text>
 <text x="180" y="1106" font-family="monospace" font-size="11.5" fill="#e8f1fb" text-anchor="start" font-weight="normal" letter-spacing="0">U2 pin 15 (D9/OC1A) → R5 → Q1 base</text>
 <text x="660" y="1106" font-family="monospace" font-size="11.5" fill="#7fd8ff" text-anchor="start" font-weight="bold" letter-spacing="0">PWM_BUS</text>
@@ -818,7 +818,7 @@
 <text x="1286" y="1138" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">DRAWING No.</text>
 <text x="1286" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">SFE-2026-01</text>
 <text x="1504" y="1138" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">REV</text>
-<text x="1504" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">D</text>
+<text x="1504" y="1154" font-family="monospace" font-size="13" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">E</text>
 <text x="1286" y="1178" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">SCALE</text>
 <text x="1286" y="1194" font-family="monospace" font-size="12" fill="#e8f1fb" text-anchor="start" font-weight="bold" letter-spacing="0">NTS</text>
 <text x="1504" y="1178" font-family="monospace" font-size="9.5" fill="#9fc3e3" text-anchor="start" font-weight="normal" letter-spacing="1.2">SUPPLY</text>

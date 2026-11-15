@@ -12,7 +12,7 @@
      D5  (pin 11) LED_A    green status LED via 330R
      D6  (pin 12) LED_B    green status LED via 330R
      D9  (pin 15) PWM_CTL  OC1A -> 1k -> base of Q1 (2N2222A)
-     A0  (pin 23) POT      RV1 10k wiper
+     A2  (pin 25) POT      RV1 10k wiper (A0 on early builds; see CHANGELOG)
      A4  (pin 27) SDA      LCD backpack
      A5  (pin 28) SCL      LCD backpack
 
@@ -91,7 +91,7 @@ const uint8_t  PIN_BTN    = 4;
 const uint8_t  PIN_LED_A  = 5;
 const uint8_t  PIN_LED_B  = 6;
 const uint8_t  PIN_PWM    = 9;
-const uint8_t  PIN_POT    = A0;
+const uint8_t  PIN_POT    = A2;
 
 /* Timer1 TOP for a 25 kHz carrier, derived from whatever crystal is fitted.
    Phase-correct PWM:  f = F_CPU / (2 * prescaler * TOP),  prescaler = 1.
@@ -478,7 +478,7 @@ void updateDisplay() {
 }
 
 /* =====================================================================
-   Free pins for future work: D7, D8, D10-D13, A1, A2, A3.
+   Free pins for future work: D7, D8, D10-D13, A0, A1, A3.
    Obvious additions: a buzzer on fault (D7), a second pot for a boost
-   preset (A1), a thermistor watching the carbon pad (A2).
+   preset (A1), a thermistor watching the carbon pad (A3).
    ===================================================================== */

@@ -5,9 +5,10 @@ pre-filter and an activated-carbon pad. A bare ATmega328P (programmed in an Ardu
 then moved to the board) reads a 10 k pot, makes 25 kHz PWM through a 2N2222A, reads both
 fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C LCD.
 
-**Status:** drawing set **Rev D**, firmware **v1.3**. First powered on the owner's build
-2026-11-13 (their own placement on a 7×9 cm board, not sheet 4's): the chip runs and the LCD
-shows text. Still being debugged; see "Owner's build" below.
+**Status:** drawing set **Rev E**, firmware **v1.3** (pot on A2). The owner's prototype
+("The Mega Extractor 5000"; the name may change) is **finished and working** as of
+2026-11-14: their own placement on a 7×9 cm board, not sheet 4's. See "Owner's build" below
+and `docs/Build_Log.md`.
 
 **Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. Claude commits and
 pushes its own work once `check.sh` passes (the owner's instruction, 2026-11-12), and says what
@@ -21,12 +22,13 @@ was pushed. Ask first before anything destructive: force-pushing or rewriting hi
 - They want errors found, not reassurance. Check before claiming, and say plainly when
   something hasn't been verified.
 - Windows PC with the Arduino IDE installed. Run `check.sh` from Git Bash.
-- Parts they actually have and fitted (the drawings already reflect these):
+- Parts they actually have and fitted:
   - **D1 = 1N5402G** (3 A, 200 V, DO-201AD). Its legs are ~1.3 mm thick, so the holes
     need opening up from the standard 1.0 mm.
   - **C1 = two 100 µF 50 V electrolytics in parallel** (C1A, C1B).
-  - **F1 = 1 A fuse** for now. That's fine without the USB port (0.67 A steady).
-    The USB port (sheet 3) waits until they get a **2 A slow-blow**.
+  - **F1 = 2 A slow-blow** (fitted by 2026-11-14).
+  - **U1 = L7805CV** on the prototype instead of the MP1584 buck. Fine for the logic; the
+    USB port (sheet 3, not built) needs the buck module back.
   - 16.000 MHz two-leg crystal; 1N4007 and 1N4002 on hand; an Uno with a socketed DIP
     chip, used to program the ATmega.
 - USB port: a **plain 5 V USB-A outlet for phones**, D+ strapped to D−. Not the TP4056
@@ -48,6 +50,8 @@ was pushed. Ask first before anything destructive: force-pushing or rewriting hi
 | Every LCD string is exactly 16 characters | A 17-character string was once silently cut short. `test_logic.cpp` enforces this. |
 | `Wire.setWireTimeout(25000, true)`, and the PWM set up **after** the LCD starts | Wire waits forever by default. A stuck I2C bus must never leave the fans stopped: with the timeout it can't hang, and if the display init ever did hang, the PWM pin is still floating, so the fans run at 100 %. |
 | Pot dead band: on at 7 %, off at 4 % | A knob resting on the edge would otherwise flick the fans on and off, each time with a full-power start burst. |
+| Pot on **A2 (pin 25)**, not A0 | The prototype chip's A0 input was damaged by early power faults. A2 works on any chip, so the whole design moved there (Rev E) and the firmware matches the prototype. |
+| Drawings show the **recommended** circuit; the prototype's differences live in `docs/Build_Log.md` and the README's as-built table | The prototype lacks R12/R13 and C4 and uses a 7805. Don't delete those parts from the drawings to "match" it: they protect the next builder. |
 
 ## Files
 
@@ -68,6 +72,8 @@ docs/schematics/                  SFE-01..03: SVG (source) + PNG
 docs/layout/                      SFE-04 (generated) + SFE-D1 pot detail: SVG + PNG
 docs/Build_Guide.md               the full build guide
 images/                           README copies of the five drawing PNGs + SFE-parts.jpg
+images/photos/                    README photos and GIF clips of the finished prototype
+docs/Build_Log.md                 the prototype: faults found, as-built differences, loose ends
 *.stl                             the four printed enclosure parts (owner's own models)
 check.sh                          runs everything; it must end "ALL CHECKS PASSED"
 ```
@@ -75,6 +81,11 @@ check.sh                          runs everything; it must end "ALL CHECKS PASSE
 **`images/SFE-*.png` are plain copies of the PNGs in `docs/`** for the README. After
 re-exporting a drawing (or after `check.sh` redraws SFE-04), copy it over the matching
 file in `images/` too, or the README shows a stale sheet.
+
+**Photos in the repo are cropped to the hardware.** The owner's phone clips carry
+stickers, a location tag and, in one, a person on a monitor behind the board: crop those
+out, and never publish frames showing a real person's photo. `my-board/` holds the owner's
+own board photos and is never committed (see `.gitignore`).
 
 **SFE-01..03 and SFE-D1 are hand-maintained SVG.** The Python that first generated them
 was lost in a workspace reset. Edit their text directly, one change at a time, and
@@ -107,36 +118,32 @@ confirm each replacement matches exactly once. Re-export the PNG after any chang
   - The pot mapping over all 1024 positions, every LCD string length, the
     stall/restart logic, and all 10,201 ramp transitions.
   - The layout's netlist, and its physical fit using typical part sizes.
-- **Reported by the owner on their build (2026-11-13):** the chip runs on the board at
-  16 MHz, the LCD answers at 0x27 and shows v1.3's text, the pot sweeps 0–5 V at pin 23.
-  Blink, an I2C scanner and v1.3 also ran with the chip in their Uno.
+- **Reported by the owner on their build (2026-11-13/14):** the chip runs on the board at
+  16 MHz, the LCD answers at 0x27; the knob sets both fans' speed and the tachs read back
+  (64 % → 1800 and 1830 rpm, photo in `images/photos/running-lcd.jpg`). With the tach
+  lines unconnected the stall check showed `!BOTH FANS STOP` and the fans stayed at
+  100 %, as designed.
 - **Not verified:**
-  - Fan speed control, tach reading and fault handling on real hardware.
+  - The stall auto-restart and the watchdog reset on real hardware.
   - The buck module's real pad positions (they vary; the module is taped down and wired).
   - The exact body sizes of the owner's parts.
   - Upload, bootloader and watchdog behaviour on their Uno.
 
-## Owner's build (2026-11-13)
+## Owner's build (finished 2026-11-14)
 
-- **U1 swapped for an L7805CV** (they thought the MP1584's trimmer was broken; it's
-  multi-turn). The 7805 was first fitted backwards, so the 5 V rail saw about 11.8 V:
-  C2 is rated 10 V. Fine for now; the USB port needs a buck module again.
-- **Fixed by them:** a joint bridging the 12 V input past the switch; no supply wires
-  on chip pins 7/20 (+5 V) and 8/22 (0 V); C4 wired in series with the pot wiper (it
-  goes from pin 23 to 0 V).
-- **Open:** R12 / R13 not fitted, so the LCD shows `!BOTH FANS STOP` (pins 4 and 5
-  float). They also report the fans always at 100 % — v1.3 follows the pot once the
-  fault latches, so if that persists, check the PWM path (pin 15 → R5 → Q1, Q1's
-  collector → the fans' pin 4). A possible bridge between chip pins 23 and 24 (A1 is
-  unused). Check the 12 V rail under both fans.
+Full record in `docs/Build_Log.md`. In short, it differs from the drawings by: an
+**L7805CV** for U1 (first fitted backwards, so the 5 V rail and C2, rated 10 V, saw about
+11.8 V); **no R12/R13** (tach lines go straight to pins 4/5 with their 10 k pull-ups);
+**no C4**; the pot on **A2** because the chip's A0 is damaged; the chip in female header
+strips. Loose ends they listed: solder the pot jumper to leg 25, clean flux between legs
+23 and 24, recheck the 7805 (read 5.4 V once), the knob's floor gives ~30 % (pot bottom
+end at 0.55 V: check for a shared ground with fan current, or a bad joint), fit R12/R13,
+keep the 7805 clear of the PLA case, a fresh ATmega328P when convenient.
 
 ## Good next steps
 
-1. Install `arduino-cli`, then run `arduino-cli core install arduino:avr` and
-   `arduino-cli lib install "LiquidCrystal I2C"` (author: Frank de Brabander).
-   `check.sh` will use it for the real build. Upload through the Uno.
-2. Bench bring-up per guide §7: buck alone at 5.00 V → short check → **D1 diode-test
-   check** → chip → fans.
-3. When the 2 A slow-blow arrives: build the USB port from sheet 3 and re-trim U1 to
-   5.10 V.
-4. Optional, using free pins: a fault buzzer on D7, a thermistor on A2.
+1. Work through the loose ends above (the build log has them as a checklist).
+2. Add the project to the owner's website projects page (next thing they asked for).
+3. If they build the USB port: put the MP1584 back for U1 (the 7805 can't supply it) and
+   trim it to 5.10 V.
+4. Optional, using free pins: a fault buzzer on D7, a thermistor on A3.

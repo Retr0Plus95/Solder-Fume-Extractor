@@ -246,7 +246,7 @@
       "ref": "C4",
       "value": "100 nF",
       "type": "capacitor-ceramic",
-      "role": "Smooths the speed knob's voltage into pin 23 (A0), so the reading doesn't jitter."
+      "role": "Smooths the speed knob's voltage into pin 25 (A2), so the reading doesn't jitter."
     },
     {
       "ref": "J5",
@@ -270,7 +270,7 @@
       "ref": "RV1",
       "value": "10k linear",
       "type": "potentiometer",
-      "role": "The fan-speed knob on the front panel, read on pin 23.",
+      "role": "The fan-speed knob on the front panel, read on pin 25 (A2).",
       "note": "Off the board, wired to J5. If the knob turns the wrong way, swap its two outer wires."
     },
     {
@@ -1481,11 +1481,11 @@
       {
         "path": [
           [
-            16,
+            14,
             10
           ],
           [
-            16,
+            14,
             9
           ],
           [
@@ -2097,7 +2097,7 @@
       "POT": [
         [
           "U2",
-          "23"
+          "25"
         ],
         [
           "C4",
@@ -2153,8 +2153,8 @@
       "17",
       "18",
       "19",
+      "23",
       "24",
-      "25",
       "26"
     ]
   },
@@ -2243,7 +2243,7 @@
     {
       "id": "panel",
       "title": "The panel side",
-      "why": "Headers along the bottom edge: J5 to the front panel (both LEDs and the speed knob), J4 to the LCD, J6 to push-button SW2. R2 and R3 limit the LEDs' current; C4 smooths the knob's voltage into pin 23 so the reading doesn't jitter.",
+      "why": "Headers along the bottom edge: J5 to the front panel (both LEDs and the speed knob), J4 to the LCD, J6 to push-button SW2. R2 and R3 limit the LEDs' current; C4 smooths the knob's voltage into pin 25 (A2) so the reading doesn't jitter.",
       "parts": [
         "R2",
         "R3",
