@@ -14,6 +14,8 @@
   the wire to pin 25, or set `PIN_POT` back to `A0`.
 - The project has a name: **Sir Sucks-a-Lot** (it was "The Mega Extractor 5000" for a day).
   The README title and the poster carry it; the repository keeps its name, so links still work.
+- The whole project is MIT licensed, the 3D-printed case (`.stl` files) included; the
+  README says so.
 - README: photos and short clips of the finished build, an as-built table, the status
   changed to finished. The photos are cropped to the hardware.
 - Build guide: points to the build log up front; pin table and free-pin list updated.
