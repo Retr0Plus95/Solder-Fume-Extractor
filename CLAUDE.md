@@ -10,6 +10,8 @@ fans' tachometers, and shows speed, RPM, faults and filter hours on a 1602 I2C L
 2026-11-14: their own placement on a 7×9 cm board, not sheet 4's. See "Owner's build" below
 and `docs/Build_Log.md`.
 
+**Licence:** MIT for everything, the `.stl` case files included (owner's choice, 2026-11-15).
+
 **Repo:** github.com/retr0plus95/Solder-Fume-Extractor, branch `main`. Claude commits and
 pushes its own work once `check.sh` passes (the owner's instruction, 2026-11-12), and says what
 was pushed. Ask first before anything destructive: force-pushing or rewriting history.
@@ -143,7 +145,9 @@ keep the 7805 clear of the PLA case, a fresh ATmega328P when convenient.
 ## Good next steps
 
 1. Work through the loose ends above (the build log has them as a checklist).
-2. Add the project to the owner's website projects page (next thing they asked for).
+2. ~~Website~~ Done 2026-11-15: retr0plus.se has the project card, a build log entry with photos and
+   the four case downloads (licence MIT). That content lives in the site's control panel
+   (retr0plus.se/admin/), not in the Website repo; the owner signs in, Claude can't.
 3. If they build the USB port: put the MP1584 back for U1 (the 7805 can't supply it) and
    trim it to 5.10 V.
 4. Optional, using free pins: a fault buzzer on D7, a thermistor on A3.
